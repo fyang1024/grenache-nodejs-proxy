@@ -1,0 +1,1 @@
+module.exports.PeerPRCProxy = require('./lib/PeerRPCProxy')
