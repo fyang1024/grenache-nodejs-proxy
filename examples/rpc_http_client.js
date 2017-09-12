@@ -1,3 +1,4 @@
+/* eslint-disable no-trailing-spaces */
 'use strict'
 
 const Http = require('grenache-nodejs-http')
@@ -12,22 +13,56 @@ link.start()
 const peer = new Peer(link, {})
 peer.init()
 
-const reqs = 1
-let reps = 0
+function sleep (time) {
+  return new Promise((resolve) => setTimeout(resolve, time))
+}
 
-setTimeout(() => {
-  const d1 = new Date()
-  for (let i = 0; i < reqs; i++) {
-    peer.request('rpc_proxy_test', {serviceType: 'WS', service: 'rpc_test', payload: 'Hello'}, { timeout: 10000 }, (err, data) => {
-      if (err) {
-        console.error(err)
-        process.exit(-1)
-      }
-      console.log(err, data)
-      if (++reps === reqs) {
-        const d2 = new Date()
-        console.log(d2 - d1)
-      }
-    })
-  }
-}, 2000)
+// The following block is to test stateless rpc proxy
+
+// peer.request('rpc_proxy', {serviceType: 'WS', service: 'coffee', payload: 'Hello'}, {timeout: 10000}, (err, data) => {
+//   if (err) {
+//     console.error(err)
+//     process.exit(-1)
+//   }
+//   console.log(err, data)
+// })
+
+// The following block is to test stateful rpc proxy
+
+sleep(1000).then(() => {
+  peer.request('stateful_rpc_proxy', 'WS:coffee', {timeout: 10000}, (err, data) => {
+    if (err) {
+      console.error(err)
+      process.exit(-1)
+    }
+    console.log(err, data)
+  })
+  return sleep(1000)
+}).then(() => {
+  peer.request('stateful_rpc_proxy', 'Hello', {timeout: 10000}, (err, data) => {
+    if (err) {
+      console.error(err)
+      process.exit(-1)
+    }
+    console.log(err, data)
+  })
+  return sleep(1000)
+}).then(() => {
+  peer.request('stateful_rpc_proxy', 'STOP', {timeout: 10000}, (err, data) => {
+    if (err) {
+      console.error(err)
+      process.exit(-1)
+    }
+    console.log(err, data)
+  })
+  return sleep(1000)
+}).then(() => {
+  peer.request('stateful_rpc_proxy', 'Hello', {timeout: 10000}, (err, data) => {
+    if (err) {
+      console.error(err)
+      process.exit(-1)
+    }
+    console.log(err, data)
+  })
+})
+

@@ -6,7 +6,7 @@
 
 const Grenache = require('./../')
 const Link = require('grenache-nodejs-link')
-const PeerRPCProxy = Grenache.PeerPRCProxy
+const StatefulPeerRPCProxy = Grenache.StatefulPeerRPCProxy
 
 const _ = require('lodash')
 
@@ -15,13 +15,13 @@ const link = new Link({
 })
 link.start()
 
-// const peer = new PeerRPCProxy(link, {proxyType: 'WS'})
-const peer = new PeerRPCProxy(link, {proxyType: 'HTTP'})
+// const peer = new StatefulPeerRPCProxy(link, {proxyType: 'WS'})
+const peer = new StatefulPeerRPCProxy(link, {proxyType: 'HTTP'})
 peer.init()
 
 const service = peer.transport('server')
 service.listen(_.random(1000) + 1024)
 
 setInterval(function () {
-  link.announce('rpc_proxy', service.port, {})
+  link.announce('stateful_rpc_proxy', service.port, {})
 }, 1000)
