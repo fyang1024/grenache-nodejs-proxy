@@ -46,7 +46,7 @@ sleep(1000).then(() => {
   })
   return sleep(1000)
 }).then(() => {
-  peer.request('stateful_rpc_proxy', 'Hello', {timeout: 10000}, (err, data) => {
+  peer.request('stateful_rpc_proxy', 'HTTP:tea', {timeout: 10000}, (err, data) => {
     if (err) {
       console.error(err)
       process.exit(-1)
@@ -55,7 +55,7 @@ sleep(1000).then(() => {
   })
   return sleep(1000)
 }).then(() => {
-  peer.request('stateful_rpc_proxy', 'STOP', {timeout: 10000}, (err, data) => {
+  peer.request('HTTP:coffee', 'Hello', {timeout: 10000}, (err, data) => {
     if (err) {
       console.error(err)
       process.exit(-1)
@@ -64,7 +64,25 @@ sleep(1000).then(() => {
   })
   return sleep(1000)
 }).then(() => {
-  peer.request('stateful_rpc_proxy', 'Hello', {timeout: 10000}, (err, data) => {
+  peer.request('HTTP:tea', 'Hello', {timeout: 10000}, (err, data) => {
+    if (err) {
+      console.error(err)
+      process.exit(-1)
+    }
+    console.log(err, data)
+  })
+  return sleep(1000)
+}).then(() => {
+  peer.request('stateful_rpc_proxy', 'STOP HTTP:tea', {timeout: 10000}, (err, data) => {
+    if (err) {
+      console.error(err)
+      process.exit(-1)
+    }
+    console.log(err, data)
+  })
+  return sleep(1000)
+}).then(() => {
+  peer.request('HTTP:tea', 'Hello', {timeout: 10000}, (err, data) => {
     if (err) {
       console.error(err)
       process.exit(-1)

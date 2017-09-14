@@ -1,12 +1,8 @@
-// make sure you start 2 grapes
-// grape --dp 20001 --aph 30001 --bn '127.0.0.1:20002'
-// grape --dp 20002 --aph 40001 --bn '127.0.0.1:20001'
-
 'use strict'
 
-const Ws = require('grenache-nodejs-ws')
+const Http = require('grenache-nodejs-http')
 const Link = require('grenache-nodejs-link')
-const PeerRPCServer = Ws.PeerRPCServer
+const Peer = Http.PeerRPCServer
 
 const _ = require('lodash')
 
@@ -15,10 +11,12 @@ const link = new Link({
 })
 link.start()
 
-const peer = new PeerRPCServer(link, {})
+const peer = new Peer(link, {
+  timeout: 300000
+})
 peer.init()
 
-const service = peer.transport('proxy')
+const service = peer.transport('server')
 service.listen(_.random(1000) + 1024)
 
 setInterval(function () {
@@ -27,6 +25,6 @@ setInterval(function () {
 
 service.on('request', (rid, key, payload, handler) => {
   console.log('peer', rid, key, payload)
+  handler.reply(null, key + ' world')
   // handler.reply(new Error('something went wrong'), 'world')
-  handler.reply(null, 'world ' + service.port)
 })
